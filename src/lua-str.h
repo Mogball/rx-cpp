@@ -5,9 +5,6 @@
 extern "C" {
 #endif
 
-typedef void (*FailFun)(const char *msg);
-void str_fail_func(FailFun f);
-
 typedef struct LuaMatch {
   int start;
   int end;

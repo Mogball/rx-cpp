@@ -8,11 +8,6 @@
 #include <stdarg.h>
 #include "lua-str.h"
 
-static FailFun s_fail_fun;
-
-void str_fail_func(FailFun f) {
-    s_fail_fun = f;
-}
 
 /* macro to `unsign' a character */
 #define uchar(c)	((unsigned char)(c))
@@ -58,12 +53,8 @@ static int throw_error(const char *fmt,...) {
     va_start(ap,fmt);
     vsnprintf(buff,sizeof(buff),fmt,ap);
     va_end(ap);
-    if (! s_fail_fun) {
-      fprintf(stderr,"%s\n",buff);
-      exit(1);
-    } else {
-      s_fail_fun(buff);
-    }
+    fprintf(stderr,"%s\n",buff);
+    exit(1);
     return 0;
 }
 
@@ -402,7 +393,7 @@ int str_match (const char *s, size_t ls, const char *p,  LuaMatch *mm) {
     ms.level = 0;
     if ((res=match(&ms, s1, p)) != NULL) {
         mm[0].start = s1 - s;  /* start */
-        mm[0].end = res - s;   /* end */        
+        mm[0].end = res - s;   /* end */
         return push_captures(&ms, NULL, 0, mm+1) + 1;
     }
   } while (s1++ < ms.src_end && !anchor);
